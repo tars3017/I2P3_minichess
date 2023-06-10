@@ -5,9 +5,12 @@
 #include <cstdlib>
 #include <vector>
 #include <utility>
+#include <algorithm>
 
 #include "../config.hpp"
 
+
+#define INF 0x3f3f3f3f
 
 typedef std::pair<size_t, size_t> Point;
 typedef std::pair<Point, Point> Move;
@@ -53,7 +56,7 @@ class State{
     State(Board board): board(board){};
     State(Board board, int player): board(board), player(player){};
     
-    int evaluate();
+    int evaluate(int);
     State* next_state(Move move);
     void get_legal_actions();
     std::string encode_output();

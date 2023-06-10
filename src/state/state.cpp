@@ -11,9 +11,67 @@
  * 
  * @return int 
  */
-int State::evaluate(){
+int score_table(int kind) {
+  switch(kind) {
+    case 1:
+      return 2;
+    case 2:
+      return 6;
+    case 3:
+      return 7;
+    case 4:
+      return 8;
+    case 5:
+      return 20;
+    case 6:
+      return 100000;
+    default:
+      return 0;
+  }
+}
+int State::evaluate(int game_player){
   // [TODO] design your own evaluation function
-  return 0;
+  int val = 0;
+  std::cout << "now state " << std::endl;
+  std::cout << "white\n";
+  for (int i = 0; i < BOARD_H; ++i) {
+    for (int j = 0; j < BOARD_W; ++j) {
+       std::cout << (int)board.board[0][i][j];
+      std::cout << " ";
+    }
+    std::cout << "\n";
+  }
+  std::cout << "black\n";
+  for (int i = 0; i < BOARD_H; ++i) {
+    for (int j = 0; j < BOARD_W; ++j) {
+       std::cout << (int)board.board[1][i][j];
+      std::cout << " ";
+    }
+    std::cout << "\n";
+  }
+
+  if (game_state == WIN) {
+    val = (player == game_player ? INF : -INF);
+    return val;
+  }
+
+  for (int i = 0; i < BOARD_H; ++i) {
+    for (int j = 0; j < BOARD_W; ++j) {
+      val += score_table(board.board[player][i][j]);
+      val -= score_table(board.board[1-player][i][j]);
+    }
+  }
+  val *= 3;
+  std::cout << "player " << player << std::endl;
+
+  for (auto action : legal_actions) {
+    val += score_table(board.board[1-player][action.second.first][action.second.second]);
+  }
+
+  if (player != game_player) val *= -1;
+
+  std::cout << "evaluate val " << val << "\n";
+  return val;
 }
 
 
