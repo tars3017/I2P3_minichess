@@ -433,7 +433,7 @@ int main(int argc, char** argv) {
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
     system("cls");
 #else
-    // system("clear");
+    system("clear");
 #endif
     while (true) {
       int x, y, n, m;
@@ -491,10 +491,10 @@ int main(int argc, char** argv) {
           }
         }
       }
-      if(white_material>black_material){
+      if(white_material<black_material){
         game.player = 1;
         game.game_state = WIN;
-      }else if(white_material<black_material){
+      }else if(white_material>black_material){
         game.player = 0;
         game.game_state = WIN;
       }else{
