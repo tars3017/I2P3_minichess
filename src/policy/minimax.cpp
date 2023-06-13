@@ -12,9 +12,8 @@
  * @param depth You may need this for other policy
  * @return Move 
  */
-int game_player;
 
-int minimax(State* node, int depth, int player) {
+int minimax(State* node, int depth, int player, int game_player) {
     node->get_legal_actions();
     int eval = node->evaluate(game_player);
     if (depth == 0 || node->game_state != NONE) {
@@ -28,13 +27,13 @@ int minimax(State* node, int depth, int player) {
     if (player == game_player) {
       minimax_val = -INF;
       for (auto i : actions) {
-        minimax_val = std::max(minimax_val, minimax(node->next_state(i), depth-1, 1 - player));
+        minimax_val = std::max(minimax_val, minimax(node->next_state(i), depth-1, 1 - player, game_player));
       }
     }
     else {
       minimax_val = INF;
       for (auto i : actions) {
-        minimax_val = std::min(minimax_val, minimax(node->next_state(i), depth-1, 1 - player));
+        minimax_val = std::min(minimax_val, minimax(node->next_state(i), depth-1, 1 - player, game_player));
       }
     }
     return minimax_val;
@@ -48,8 +47,7 @@ Move Minimax::get_move(State *state, int depth){
 
   Move best_move;
   for (auto i : actions) {
-    game_player = state->player;
-    int tmp = minimax(state->next_state(i), depth, state->player);
+    int tmp = minimax(state->next_state(i), depth, state->player, state->player);
     std::cout << "tmp " << tmp << "\n";
     if (tmp >= fnl_val) {
       std::cout << "change best move " << tmp << std::endl;
