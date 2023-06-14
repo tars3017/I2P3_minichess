@@ -47,7 +47,7 @@ Move Minimax::get_move(State *state, int depth){
 
   Move best_move;
   for (auto i : actions) {
-    int tmp = minimax(state->next_state(i), depth, state->player, state->player);
+    int tmp = minimax(state->next_state(i), depth, 1-state->player, state->player);
     std::cout << "tmp " << tmp << "\n";
     if (tmp >= fnl_val) {
       std::cout << "change best move " << tmp << std::endl;

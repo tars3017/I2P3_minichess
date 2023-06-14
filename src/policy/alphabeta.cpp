@@ -14,10 +14,12 @@
  */
 
 int alphabeta(State* node, int depth, int alpha, int beta, int player, int game_player) {
+    std::cout << "in alphabeta " << node->player << std::endl;
     node->get_legal_actions();
     int eval = node->evaluate(game_player);
-    if (depth == 0 || node->game_state != NONE) {
-      std::cout << "reach end " << eval << std::endl;
+    if (depth == 0 || node->game_state == WIN) {
+      if (depth == 0) std::cout << "depth = 0\n";
+      else std::cout << "reach end " << eval << std::endl;
       return eval;
     }
     int alphabeta_val = 0;
@@ -50,8 +52,9 @@ Move AlphaBeta::get_move(State *state, int depth){
 
   Move best_move;
   for (auto i : actions) {
-    int tmp = alphabeta(state->next_state(i), depth, -INF, INF, state->player, state->player);
-    std::cout << "tmp " << tmp << "\n";
+    std::cout << "start alphabeta\n";
+    int tmp = alphabeta(state->next_state(i), depth, -INF, INF, 1-state->player, state->player);
+    std::cout << "end alphabeta\ntmp " << tmp << "\n";
     if (tmp >= fnl_val) {
       std::cout << "change best move " << tmp << std::endl;
       fnl_val = tmp;
