@@ -70,8 +70,8 @@ int State::evaluate(int game_player){
     // postive for pieces stay on board
     for (int i = 0 ; i < BOARD_H; ++i) {
       for (int j = 0; j < BOARD_W; ++j) {
-        val += 9 * score_table(board.board[player][i][j]);
-        val -= 3 * score_table(board.board[1-player][i][j]);
+        val += 15 * score_table(board.board[player][i][j]);
+        val -= 5 * score_table(board.board[1-player][i][j]);
       }
     }
 
@@ -85,7 +85,7 @@ int State::evaluate(int game_player){
       for (int j = 0; j < BOARD_W; ++j) {
         int piece_num = board.board[player][i][j];
         if (piece_num >= 2 && piece_num <= 4) {
-          val += 1 * (abs(origin_mp[piece_num][player].first - i) + abs(origin_mp[piece_num][player].second - j));
+          val += 2 * (abs(origin_mp[piece_num][player].first - i) + abs(origin_mp[piece_num][player].second - j));
         }
       }
     }
@@ -98,8 +98,8 @@ int State::evaluate(int game_player){
     }
     for (int i = 0 ; i < BOARD_H; ++i) {
       for (int j = 0; j < BOARD_W; ++j) {
-        val -= 9 * score_table(board.board[player][i][j]);
-        val += 3 * score_table(board.board[1-player][i][j]);
+        val -= 15 * score_table(board.board[player][i][j]);
+        val += 5 * score_table(board.board[1-player][i][j]);
       }
     }
 
@@ -111,7 +111,7 @@ int State::evaluate(int game_player){
       for (int j = 0; j < BOARD_W; ++j) {
         int piece_num = board.board[player][i][j];
         if (piece_num >= 2 && piece_num <= 4) {
-          val -= 1 * (abs(origin_mp[piece_num][player].first - i) + abs(origin_mp[piece_num][player].second - j));
+          val -= 2 * (abs(origin_mp[piece_num][player].first - i) + abs(origin_mp[piece_num][player].second - j));
         }
       }
     }
