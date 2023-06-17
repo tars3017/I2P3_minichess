@@ -57,6 +57,7 @@ class State{
     State(Board board, int player): board(board), player(player){};
     
     int evaluate(int);
+    int evaluate_cmp(int);
     State* next_state(Move move);
     void get_legal_actions();
     std::string encode_output();

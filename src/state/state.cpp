@@ -1,7 +1,6 @@
 #include <iostream>
 #include <sstream>
 #include <cstdint>
-
 #include "./state.hpp"
 #include "../config.hpp"
 
@@ -11,6 +10,9 @@
  * 
  * @return int 
  */
+
+std::pair<int, int> origin_mp[10][2];
+
 int score_table(int kind) {
   switch(kind) {
     case 1:
@@ -30,7 +32,16 @@ int score_table(int kind) {
   }
 }
 int State::evaluate(int game_player){
-  // [TODO] design your own evaluation function
+  origin_mp[2][0] = {5, 0};
+  origin_mp[3][0] = {5, 1};
+  origin_mp[4][0] = {5, 2};
+  origin_mp[5][0] = {5, 3};
+
+  origin_mp[2][1] = {0, 4};
+  origin_mp[3][1] = {0, 3};
+  origin_mp[4][1] = {0, 2};
+  origin_mp[5][1] = {0, 1};
+  
   int val = 0;
   std::cout << "now state, player" << player << ' ' << game_player << std::endl;
   std::cout << "white\n";
@@ -55,6 +66,99 @@ int State::evaluate(int game_player){
       std::cout << "INFINITY\n";
       return INF;
     }
+
+    // postive for pieces stay on board
+    for (int i = 0 ; i < BOARD_H; ++i) {
+      for (int j = 0; j < BOARD_W; ++j) {
+        val += 9 * score_table(board.board[player][i][j]);
+        val -= 3 * score_table(board.board[1-player][i][j]);
+      }
+    }
+
+    // positive for more attack options
+    for (auto action : legal_actions) {
+      val += 3 * score_table(board.board[1-player][action.second.first][action.second.second]);
+    }
+
+    // positive for leaving origin place
+    for (int i = 0; i < BOARD_H; ++i) {
+      for (int j = 0; j < BOARD_W; ++j) {
+        int piece_num = board.board[player][i][j];
+        if (piece_num >= 2 && piece_num <= 4) {
+          val += 1 * (abs(origin_mp[piece_num][player].first - i) + abs(origin_mp[piece_num][player].second - j));
+        }
+      }
+    }
+  }
+  else {
+    std::cout << "opponent's evaluation \n";
+    if (game_state == WIN) {
+      std::cout << "-INFINITY\n";
+      return -INF;
+    }
+    for (int i = 0 ; i < BOARD_H; ++i) {
+      for (int j = 0; j < BOARD_W; ++j) {
+        val -= 9 * score_table(board.board[player][i][j]);
+        val += 3 * score_table(board.board[1-player][i][j]);
+      }
+    }
+
+    for (auto action : legal_actions) {
+      val -= 3 * score_table(board.board[1-player][action.second.first][action.second.second]);
+    }
+
+    for (int i = 0; i < BOARD_H; ++i) {
+      for (int j = 0; j < BOARD_W; ++j) {
+        int piece_num = board.board[player][i][j];
+        if (piece_num >= 2 && piece_num <= 4) {
+          val -= 1 * (abs(origin_mp[piece_num][player].first - i) + abs(origin_mp[piece_num][player].second - j));
+        }
+      }
+    }
+
+  }
+
+  std::cout << "evaluate val " << val << "\n";
+  return val;
+}
+
+int State::evaluate_cmp(int game_player){
+  origin_mp[2][0] = {5, 0};
+  origin_mp[3][0] = {5, 1};
+  origin_mp[4][0] = {5, 2};
+  origin_mp[5][0] = {5, 3};
+
+  origin_mp[2][1] = {0, 4};
+  origin_mp[3][1] = {0, 3};
+  origin_mp[4][1] = {0, 2};
+  origin_mp[5][1] = {0, 1};
+  
+  int val = 0;
+  std::cout << "now state, player" << player << ' ' << game_player << std::endl;
+  std::cout << "white\n";
+  for (int i = 0; i < BOARD_H; ++i) {
+    for (int j = 0; j < BOARD_W; ++j) {
+       std::cout << (int)board.board[0][i][j];
+      std::cout << " ";
+    }
+    std::cout << "\n";
+  }
+  std::cout << "black\n";
+  for (int i = 0; i < BOARD_H; ++i) {
+    for (int j = 0; j < BOARD_W; ++j) {
+       std::cout << (int)board.board[1][i][j];
+      std::cout << " ";
+    }
+    std::cout << "\n";
+  }
+
+  if (player == game_player) {
+    if (game_state == WIN) {
+      std::cout << "INFINITY\n";
+      return INF;
+    }
+
+    // postive for pieces stay on board
     for (int i = 0 ; i < BOARD_H; ++i) {
       for (int j = 0; j < BOARD_W; ++j) {
         val += 3 * score_table(board.board[player][i][j]);
@@ -62,8 +166,19 @@ int State::evaluate(int game_player){
       }
     }
 
+    // positive for more attack options
     for (auto action : legal_actions) {
-      val += score_table(board.board[1-player][action.second.first][action.second.second]);
+      val += 1 * score_table(board.board[1-player][action.second.first][action.second.second]);
+    }
+
+    // positive for leaving origin place
+    for (int i = 0; i < BOARD_H; ++i) {
+      for (int j = 0; j < BOARD_W; ++j) {
+        int piece_num = board.board[player][i][j];
+        if (piece_num >= 2 && piece_num <= 4) {
+          val += 1 * (abs(origin_mp[piece_num][player].first - i) + abs(origin_mp[piece_num][player].second - j));
+        }
+      }
     }
   }
   else {
@@ -80,8 +195,18 @@ int State::evaluate(int game_player){
     }
 
     for (auto action : legal_actions) {
-      val -= score_table(board.board[1-player][action.second.first][action.second.second]);
+      val -= 1 * score_table(board.board[1-player][action.second.first][action.second.second]);
     }
+
+    for (int i = 0; i < BOARD_H; ++i) {
+      for (int j = 0; j < BOARD_W; ++j) {
+        int piece_num = board.board[1-player][i][j];
+        if (piece_num >= 2 && piece_num <= 4) {
+          val -= 1 * (abs(origin_mp[piece_num][player].first - i) + abs(origin_mp[piece_num][player].second - j));
+        }
+      }
+    }
+
   }
 
   std::cout << "evaluate val " << val << "\n";
