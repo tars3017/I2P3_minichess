@@ -72,7 +72,7 @@ int State::evaluate(int game_player){
     for (int i = 0 ; i < BOARD_H; ++i) {
       for (int j = 0; j < BOARD_W; ++j) {
         val += 15 * score_table(board.board[player][i][j]);
-        val -= 5 * score_table(board.board[1-player][i][j]);
+        val -= 15 * score_table(board.board[1-player][i][j]);
         // if (board.board[1-player][i][j] == 6) {
         //   king_pos.first = i, king_pos.second = j;
         // }
@@ -103,7 +103,7 @@ int State::evaluate(int game_player){
     for (int i = 0 ; i < BOARD_H; ++i) {
       for (int j = 0; j < BOARD_W; ++j) {
         val -= 15 * score_table(board.board[player][i][j]);
-        val += 5 * score_table(board.board[1-player][i][j]);
+        val += 15 * score_table(board.board[1-player][i][j]);
         // if (board.board[1-player][i][j] == 6) {
         //   king_pos.first = i, king_pos.second = j;
         // }
