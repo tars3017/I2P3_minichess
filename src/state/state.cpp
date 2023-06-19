@@ -18,7 +18,7 @@ int score_table(int kind) {
     case 1:
       return 5;
     case 2:
-      return 10;
+      return 40;
     case 3:
       return 40;
     case 4:
@@ -61,6 +61,7 @@ int State::evaluate(int game_player){
     std::cout << "\n";
   }
 
+  std::pair<int, int> king_pos;
   if (player == game_player) {
     if (game_state == WIN) {
       std::cout << "INFINITY\n";
@@ -72,6 +73,9 @@ int State::evaluate(int game_player){
       for (int j = 0; j < BOARD_W; ++j) {
         val += 15 * score_table(board.board[player][i][j]);
         val -= 5 * score_table(board.board[1-player][i][j]);
+        // if (board.board[1-player][i][j] == 6) {
+        //   king_pos.first = i, king_pos.second = j;
+        // }
       }
     }
 
@@ -80,15 +84,15 @@ int State::evaluate(int game_player){
       val += 3 * score_table(board.board[1-player][action.second.first][action.second.second]);
     }
 
-    // positive for leaving origin place
-    for (int i = 0; i < BOARD_H; ++i) {
-      for (int j = 0; j < BOARD_W; ++j) {
-        int piece_num = board.board[player][i][j];
-        if (piece_num >= 2 && piece_num <= 4) {
-          val += 2 * (abs(origin_mp[piece_num][player].first - i) + abs(origin_mp[piece_num][player].second - j));
-        }
-      }
-    }
+    // positive for near the king
+    // for (int i = 0; i < BOARD_H; ++i) {
+    //   for (int j = 0; j < BOARD_W; ++j) {
+    //     int piece_num = board.board[player][i][j];
+    //     if (piece_num >= 2 && piece_num <= 4) {
+    //       val -= 15 * (abs(king_pos.first - i) + abs(king_pos.second - j));
+    //     }
+    //   }
+    // }
   }
   else {
     std::cout << "opponent's evaluation \n";
@@ -100,6 +104,9 @@ int State::evaluate(int game_player){
       for (int j = 0; j < BOARD_W; ++j) {
         val -= 15 * score_table(board.board[player][i][j]);
         val += 5 * score_table(board.board[1-player][i][j]);
+        // if (board.board[1-player][i][j] == 6) {
+        //   king_pos.first = i, king_pos.second = j;
+        // }
       }
     }
 
@@ -107,14 +114,14 @@ int State::evaluate(int game_player){
       val -= 3 * score_table(board.board[1-player][action.second.first][action.second.second]);
     }
 
-    for (int i = 0; i < BOARD_H; ++i) {
-      for (int j = 0; j < BOARD_W; ++j) {
-        int piece_num = board.board[player][i][j];
-        if (piece_num >= 2 && piece_num <= 4) {
-          val -= 2 * (abs(origin_mp[piece_num][player].first - i) + abs(origin_mp[piece_num][player].second - j));
-        }
-      }
-    }
+    // for (int i = 0; i < BOARD_H; ++i) {
+    //   for (int j = 0; j < BOARD_W; ++j) {
+    //     int piece_num = board.board[player][i][j];
+    //     if (piece_num >= 2 && piece_num <= 4) {
+    //       val += 15 * (abs(king_pos.first - i) + abs(king_pos.second - j));
+    //     }
+    //   }
+    // }
 
   }
 
@@ -152,6 +159,7 @@ int State::evaluate_cmp(int game_player){
     std::cout << "\n";
   }
 
+  std::pair<int, int> king_pos;
   if (player == game_player) {
     if (game_state == WIN) {
       std::cout << "INFINITY\n";
@@ -161,22 +169,25 @@ int State::evaluate_cmp(int game_player){
     // postive for pieces stay on board
     for (int i = 0 ; i < BOARD_H; ++i) {
       for (int j = 0; j < BOARD_W; ++j) {
-        val += 3 * score_table(board.board[player][i][j]);
-        val -= 1 * score_table(board.board[1-player][i][j]);
+        val += 15 * score_table(board.board[player][i][j]);
+        val -= 5 * score_table(board.board[1-player][i][j]);
+        if (board.board[1-player][i][j] == 6) {
+          king_pos.first = i, king_pos.second = j;
+        }
       }
     }
 
     // positive for more attack options
     for (auto action : legal_actions) {
-      val += 1 * score_table(board.board[1-player][action.second.first][action.second.second]);
+      val += 3 * score_table(board.board[1-player][action.second.first][action.second.second]);
     }
 
-    // positive for leaving origin place
+    // positive for near the king
     for (int i = 0; i < BOARD_H; ++i) {
       for (int j = 0; j < BOARD_W; ++j) {
         int piece_num = board.board[player][i][j];
         if (piece_num >= 2 && piece_num <= 4) {
-          val += 1 * (abs(origin_mp[piece_num][player].first - i) + abs(origin_mp[piece_num][player].second - j));
+          val -= 3 * (abs(king_pos.first - i) + abs(king_pos.second - j));
         }
       }
     }
@@ -189,20 +200,23 @@ int State::evaluate_cmp(int game_player){
     }
     for (int i = 0 ; i < BOARD_H; ++i) {
       for (int j = 0; j < BOARD_W; ++j) {
-        val -= 3 * score_table(board.board[player][i][j]);
-        val += 1 * score_table(board.board[1-player][i][j]);
+        val -= 15 * score_table(board.board[player][i][j]);
+        val += 5 * score_table(board.board[1-player][i][j]);
+        if (board.board[1-player][i][j] == 6) {
+          king_pos.first = i, king_pos.second = j;
+        }
       }
     }
 
     for (auto action : legal_actions) {
-      val -= 1 * score_table(board.board[1-player][action.second.first][action.second.second]);
+      val -= 3 * score_table(board.board[1-player][action.second.first][action.second.second]);
     }
 
     for (int i = 0; i < BOARD_H; ++i) {
       for (int j = 0; j < BOARD_W; ++j) {
-        int piece_num = board.board[1-player][i][j];
+        int piece_num = board.board[player][i][j];
         if (piece_num >= 2 && piece_num <= 4) {
-          val -= 1 * (abs(origin_mp[piece_num][player].first - i) + abs(origin_mp[piece_num][player].second - j));
+          val += 3 * (abs(king_pos.first - i) + abs(king_pos.second - j));
         }
       }
     }
