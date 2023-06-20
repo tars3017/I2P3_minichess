@@ -47,21 +47,15 @@ Move MCTS::get_move(Node *now_node, int search_times){
   Move best_move;
   std::cout << "seek biggest ucb child\n";
   for (int i = 0; i < (int)now_node->childs.size(); ++i) {
-    std::cout << "wins/times " << now_node->childs[i]->wins << ' ' << now_node->childs[i]->times << '\n';
     if (now_node->childs[i]->times == 0) {
       continue;
-      // if (0 > win_rate) {
-      //     win_rate = 0;
-      //     best_move = node->edge_to_childs[i];
-      //     continue;
-      // }
-      } 
-      double now_rate = now_node->childs[i]->wins / now_node->childs[i]->times;
-      if (now_rate > win_rate) {
+    } 
+    double now_rate = now_node->childs[i]->wins / now_node->childs[i]->times;
+    if (now_rate > win_rate) {
         win_rate = now_rate;
         best_move = now_node->edge_to_childs[i];
-      } 
-    }
+    } 
+  }
 
   return best_move; 
 }
@@ -85,7 +79,6 @@ Node* sel_node(Node* node, int game_player) {
             double UCB_val = -INF;
             for (auto child : node->childs) {
                 double tmp = cal_UCB(child, game_player);
-                std::cout << "child UCD " << tmp << std::endl;
                 if (tmp > UCB_val) {
                     UCB_val = tmp;
                     best_UCB_child = child;
@@ -95,7 +88,6 @@ Node* sel_node(Node* node, int game_player) {
         }
     }
     
-    std::cout << "===" << std::endl;
     if (node->times == 0) {
         return node;
     }
@@ -184,22 +176,6 @@ void rollout(Node* node, int game_player) {
         now_state->get_legal_actions();
         auto actions = now_state->legal_actions;
         if (actions.size() == 0) {
-            std::cout << "White\n";
-            for (int i = 0; i < BOARD_H; ++i) {
-                for (int j = 0; j < BOARD_W; ++j) {
-                    std::cout << (int)now_state->board.board[0][i][j] << ' ';
-                }
-                std::cout << std::endl;
-            }
-            std::cout << "Black\n";
-            for (int i = 0; i < BOARD_H; ++i) {
-                for (int j = 0; j < BOARD_W; ++j) {
-                    std::cout << (int)now_state->board.board[1][i][j] << ' ';
-                }
-                std::cout << std::endl;
-            }
-            std::cout << now_state->game_state << std::endl;
-            
             break;
         }
         
@@ -207,10 +183,8 @@ void rollout(Node* node, int game_player) {
         now_state = now_state->next_state(next_move);
     }
     if (now_state->game_state == WIN) {
-        std::cout << "simulation some win\n" << std::endl;
         if (now_state->player == game_player) {
             node->wins++;
-            std::cout << "white win\n";
         }
         node->times++;
     }
@@ -228,10 +202,8 @@ void backpropagate(Node* selected) {
         for (auto child : selected->childs) {
             wins_total += child->wins;
             times_total += child->times;
-            std::cout << "child has " << child->wins << ' ' << child->times << '\n';
         }
         selected->wins = wins_total;
         selected->times = times_total;
-        std::cout << "backpropagate " << selected->wins << ' ' << selected->times << '\n';
     }
 }

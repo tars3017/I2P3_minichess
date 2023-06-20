@@ -14,12 +14,12 @@
  */
 
 int alphabeta(State* node, int depth, int alpha, int beta, int player, int game_player) {
-    std::cout << "in alphabeta " << node->player << std::endl;
+    // std::cout << "in alphabeta " << node->player << std::endl;
     node->get_legal_actions();
     int eval = node->evaluate(game_player);
-    if (depth == 0 || node->game_state == WIN) {
-      if (depth == 0) std::cout << "depth = 0\n";
-      else std::cout << "reach end " << eval << std::endl;
+    if (depth == 0 || node->game_state == WIN || node->game_state == DRAW) {
+      // if (depth == 0) std::cout << "depth = 0\n";
+      // else std::cout << "reach end " << eval << std::endl;
       return eval;
     }
     int alphabeta_val = 0;
@@ -30,7 +30,7 @@ int alphabeta(State* node, int depth, int alpha, int beta, int player, int game_
         for (auto i : actions) {
             alphabeta_val = std::max(alphabeta_val, alphabeta(node->next_state(i), depth-1, alpha, beta, 1-player, game_player));
             alpha = std::max(alpha, alphabeta_val);
-            if (alpha >= beta) break;
+            if (alphabeta_val >= beta) break;
         }
     }
     else {
@@ -38,7 +38,7 @@ int alphabeta(State* node, int depth, int alpha, int beta, int player, int game_
         for (auto i : actions) {
             alphabeta_val = std::min(alphabeta_val, alphabeta(node->next_state(i), depth-1, alpha, beta, 1-player, game_player));
             beta = std::min(beta, alphabeta_val);
-            if (beta <= alpha) break;
+            if (alphabeta_val <= alpha) break;
         }
     }
     return alphabeta_val;
@@ -52,11 +52,11 @@ Move AlphaBeta::get_move(State *state, int depth){
 
   Move best_move;
   for (auto i : actions) {
-    std::cout << "start alphabeta\n";
+    // std::cout << "start alphabeta\n";
     int tmp = alphabeta(state->next_state(i), depth, -INF, INF, 1-state->player, state->player);
-    std::cout << "end alphabeta\ntmp " << tmp << "\n";
+    // std::cout << "end alphabeta\ntmp " << tmp << "\n";
     if (tmp >= fnl_val) {
-      std::cout << "change best move " << tmp << std::endl;
+      // std::cout << "change best move " << tmp << std::endl;
       fnl_val = tmp;
       best_move = i; 
     }
