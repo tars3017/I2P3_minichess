@@ -30,7 +30,7 @@ int alphabeta(State* node, int depth, int alpha, int beta, int player, int game_
         for (auto i : actions) {
             alphabeta_val = std::max(alphabeta_val, alphabeta(node->next_state(i), depth-1, alpha, beta, 1-player, game_player));
             alpha = std::max(alpha, alphabeta_val);
-            if (alphabeta_val >= beta) break;
+            if (alpha >= beta) break;
         }
     }
     else {
@@ -38,7 +38,7 @@ int alphabeta(State* node, int depth, int alpha, int beta, int player, int game_
         for (auto i : actions) {
             alphabeta_val = std::min(alphabeta_val, alphabeta(node->next_state(i), depth-1, alpha, beta, 1-player, game_player));
             beta = std::min(beta, alphabeta_val);
-            if (alphabeta_val <= alpha) break;
+            if (beta <= alpha) break;
         }
     }
     return alphabeta_val;
