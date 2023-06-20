@@ -16,15 +16,15 @@ std::pair<int, int> origin_mp[10][2];
 int score_table(int kind) {
   switch(kind) {
     case 1:
-      return 5;
+      return 2;
     case 2:
-      return 40;
+      return 6;
     case 3:
-      return 40;
+      return 7;
     case 4:
-      return 50;
+      return 8;
     case 5:
-      return 100;
+      return 20;
     case 6:
       return 10000;
     default:
@@ -43,29 +43,30 @@ int State::evaluate(int game_player){
   origin_mp[5][1] = {0, 1};
   
   int val = 0;
-  std::cout << "now state, player" << player << ' ' << game_player << std::endl;
-  std::cout << "white\n";
-  for (int i = 0; i < BOARD_H; ++i) {
-    for (int j = 0; j < BOARD_W; ++j) {
-       std::cout << (int)board.board[0][i][j];
-      std::cout << " ";
-    }
-    std::cout << "\n";
-  }
-  std::cout << "black\n";
-  for (int i = 0; i < BOARD_H; ++i) {
-    for (int j = 0; j < BOARD_W; ++j) {
-       std::cout << (int)board.board[1][i][j];
-      std::cout << " ";
-    }
-    std::cout << "\n";
-  }
+  // for (int i = 0; i < BOARD_H; ++i) {
+  //   for (int j = 0; j < BOARD_W; ++j) {
+  //      std::cout << (int)board.board[0][i][j];
+  //     std::cout << " ";
+  //   }
+  //   std::cout << "\n";
+  // }
+  // std::cout << "black\n";
+  // for (int i = 0; i < BOARD_H; ++i) {
+  //   for (int j = 0; j < BOARD_W; ++j) {
+  //      std::cout << (int)board.board[1][i][j];
+  //     std::cout << " ";
+  //   }
+  //   std::cout << "\n";
+  // }
 
   std::pair<int, int> king_pos;
   if (player == game_player) {
     if (game_state == WIN) {
-      std::cout << "INFINITY\n";
+      // std::cout << "INFINITY\n";
       return INF;
+    }
+    else if (game_state == DRAW) {
+      return 0;
     }
 
     // postive for pieces stay on board
@@ -95,11 +96,15 @@ int State::evaluate(int game_player){
     // }
   }
   else {
-    std::cout << "opponent's evaluation \n";
+    // std::cout << "opponent's evaluation \n";
     if (game_state == WIN) {
-      std::cout << "-INFINITY\n";
+      // std::cout << "-INFINITY\n";
       return -INF;
     }
+    else if (game_state == DRAW) {
+      return 0;
+    }
+
     for (int i = 0 ; i < BOARD_H; ++i) {
       for (int j = 0; j < BOARD_W; ++j) {
         val -= 15 * score_table(board.board[player][i][j]);
@@ -125,7 +130,7 @@ int State::evaluate(int game_player){
 
   }
 
-  std::cout << "evaluate val " << val << "\n";
+  // std::cout << "evaluate val " << val << "\n";
   return val;
 }
 
@@ -141,28 +146,28 @@ int State::evaluate_cmp(int game_player){
   origin_mp[5][1] = {0, 1};
   
   int val = 0;
-  std::cout << "now state, player" << player << ' ' << game_player << std::endl;
-  std::cout << "white\n";
-  for (int i = 0; i < BOARD_H; ++i) {
-    for (int j = 0; j < BOARD_W; ++j) {
-       std::cout << (int)board.board[0][i][j];
-      std::cout << " ";
-    }
-    std::cout << "\n";
-  }
-  std::cout << "black\n";
-  for (int i = 0; i < BOARD_H; ++i) {
-    for (int j = 0; j < BOARD_W; ++j) {
-       std::cout << (int)board.board[1][i][j];
-      std::cout << " ";
-    }
-    std::cout << "\n";
-  }
+  // std::cout << "now state, player" << player << ' ' << game_player << std::endl;
+  // std::cout << "white\n";
+  // for (int i = 0; i < BOARD_H; ++i) {
+  //   for (int j = 0; j < BOARD_W; ++j) {
+  //      std::cout << (int)board.board[0][i][j];
+  //     std::cout << " ";
+  //   }
+  //   std::cout << "\n";
+  // }
+  // std::cout << "black\n";
+  // for (int i = 0; i < BOARD_H; ++i) {
+  //   for (int j = 0; j < BOARD_W; ++j) {
+  //      std::cout << (int)board.board[1][i][j];
+  //     std::cout << " ";
+  //   }
+  //   std::cout << "\n";
+  // }
 
   std::pair<int, int> king_pos;
   if (player == game_player) {
     if (game_state == WIN) {
-      std::cout << "INFINITY\n";
+      // std::cout << "INFINITY\n";
       return INF;
     }
 
@@ -193,9 +198,9 @@ int State::evaluate_cmp(int game_player){
     }
   }
   else {
-    std::cout << "opponent's evaluation \n";
+    // std::cout << "opponent's evaluation \n";
     if (game_state == WIN) {
-      std::cout << "-INFINITY\n";
+      // std::cout << "-INFINITY\n";
       return -INF;
     }
     for (int i = 0 ; i < BOARD_H; ++i) {
@@ -223,7 +228,7 @@ int State::evaluate_cmp(int game_player){
 
   }
 
-  std::cout << "evaluate val " << val << "\n";
+  // std::cout << "evaluate val " << val << "\n";
   return val;
 }
 
