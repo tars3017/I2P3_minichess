@@ -82,7 +82,13 @@ int State::evaluate(int game_player){
 
     // positive for more attack options
     for (auto action : legal_actions) {
-      val += 3 * score_table(board.board[1-player][action.second.first][action.second.second]);
+      if (board.board[1-player][action.second.first][action.second.second] == 6) {
+        val += 15 * score_table(6);
+      }
+      else {
+        val += 3 * score_table(board.board[1-player][action.second.first][action.second.second]);
+      }
+      
     }
 
     // positive for near the king
@@ -116,7 +122,12 @@ int State::evaluate(int game_player){
     }
 
     for (auto action : legal_actions) {
-      val -= 3 * score_table(board.board[1-player][action.second.first][action.second.second]);
+      if (board.board[1-player][action.second.first][action.second.second] == 6) {
+        val -= 15 * score_table(6);
+      }
+      else {
+        val -= 3 * score_table(board.board[1-player][action.second.first][action.second.second]);
+      } 
     }
 
     // for (int i = 0; i < BOARD_H; ++i) {
